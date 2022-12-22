@@ -13,6 +13,8 @@ from model import EMCGCN
 import utils
 
 import numpy as np
+import wandb
+from util import wandb_utils
 
 from prepare_vocab import VocabHelp
 from transformers import AdamW
@@ -121,7 +123,15 @@ def train(args):
             optimizer.step()
 
         joint_precision, joint_recall, joint_f1 = eval(model, devset, args)
-
+        wandb.log({
+            "Train_Precision": joint_precision,
+            "Train_Recall": joint_recall,
+            "Train_F1": joint_f1,
+            "Train_Loss": loss,
+            "epoch": i
+        }
+        )
+        wandb.log({"epoch": i})
         if joint_f1 > best_joint_f1:
             model_path = args.model_dir + 'bert' + args.task + '.pt'
             torch.save(model, model_path)
@@ -188,7 +198,10 @@ def test(args):
     synpost_vocab = VocabHelp.load_vocab(args.prefix + args.dataset + '/vocab_synpost.vocab')
     instances = load_data_instances(sentence_packs, post_vocab, deprel_vocab, postag_vocab, synpost_vocab, args)
     testset = DataIterator(instances, args)
-    eval(model, testset, args, False)
+    precison , recall, f1 = eval(model, testset, args, False)
+    wandb.log({"test_precision": precision})
+    wandb.log({"test_recall": recall})
+    wandb.log({"test_f1": f1})
 
 
 if __name__ == '__main__':
@@ -228,14 +241,28 @@ if __name__ == '__main__':
     parser.add_argument('--bert_lr', default=2e-5, type=float)
     parser.add_argument("--adam_epsilon", default=1e-8, type=float, help="Epsilon for Adam optimizer.")
     parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight deay if we apply some.")
-
+    parser.add_argument("--wandb_api_key", type = str, help = "Wandb Api key used for login.")
     parser.add_argument('--emb_dropout', type=float, default=0.5)
     parser.add_argument('--num_layers', type=int, default=1)
     parser.add_argument('--pooling', default='avg', type=str, help='[max, avg, sum]')
     parser.add_argument('--gcn_dim', type=int, default=300, help='dimension of GCN')
     parser.add_argument('--relation_constraint', default=True, action='store_true')
     parser.add_argument('--symmetry_decoding', default=False, action='store_true')
-
+    parser.add_argument("--config", type = str, help = "config file path")
+    os.environ["WANDB_API_KEY"] = parser.wandb_api_key
+    with open(parser.config, 'r') as stream:
+        config = yaml.load(stream, Loader=yaml.FullLoader)
+    wandb.init(project = wandb_project, name = wandb_run, config = config)
+    parser.bert_lr = config[bert_lr]
+    parser.learning_rate = config[learning_rate]
+    parser.adam_epsilon = config[adam_epsilon]
+    parser.weight_decay = config[weight_decay]
+    parser.batch_size = config[batch_size]
+    parser.max_sequence_len = config[max_sequence_len]
+    parser.emb_dropout = config[emb_dropout]
+    parser.num_layers = config[num_layers]
+    parser.gcn_dim = config[gcn_dim]
+    parse.bert_feature_dim = config[bert_feature_dim]
     args = parser.parse_args()
 
     if args.seed is not None:
