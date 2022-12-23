@@ -256,16 +256,16 @@ if __name__ == '__main__':
     with open(args.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
     wandb.init(project = args.wandb_project, name = args.wandb_run, config = config)
-    args.bert_lr = config[bert_lr]
-    args.learning_rate = config[learning_rate]
-    args.adam_epsilon = config[adam_epsilon]
-    args.weight_decay = config[weight_decay]
-    args.batch_size = config[batch_size]
-    args.max_sequence_len = config[max_sequence_len]
-    args.emb_dropout = config[emb_dropout]
-    args.num_layers = config[num_layers]
-    args.gcn_dim = config[gcn_dim]
-    args.bert_feature_dim = config[bert_feature_dim]
+    args.bert_lr = config['bert_lr']
+    args.learning_rate = config['learning_rate']
+    args.adam_epsilon = config['adam_epsilon']
+    args.weight_decay = config['weight_decay']
+    args.batch_size = config['batch_size']
+    args.max_sequence_len = config['max_sequence_len']
+    args.emb_dropout = config['emb_dropout']
+    args.num_layers = config['num_layers']
+    args.gcn_dim = config['gcn_dim']
+    args.bert_feature_dim = config['bert_feature_dim']
 
     if args.seed is not None:
         random.seed(args.seed)
