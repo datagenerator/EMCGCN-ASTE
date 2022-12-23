@@ -240,7 +240,7 @@ if __name__ == '__main__':
     parser.add_argument('--bert_lr', default=2e-5, type=float)
     parser.add_argument("--adam_epsilon", default=1e-8, type=float, help="Epsilon for Adam optimizer.")
     parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight decay if we apply some.")
-    parser.add_argument("--wandb_api_key", type = str, help = "Wandb Api key used for login.")
+    parser.add_argument('--wandb_api_key', type = str, help = "Wandb Api key used for login.")
     parser.add_argument('--emb_dropout', type=float, default=0.5)
     parser.add_argument('--num_layers', type=int, default=1)
     parser.add_argument('--pooling', default='avg', type=str, help='[max, avg, sum]')
