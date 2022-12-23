@@ -198,7 +198,7 @@ def test(args):
     synpost_vocab = VocabHelp.load_vocab(args.prefix + args.dataset + '/vocab_synpost.vocab')
     instances = load_data_instances(sentence_packs, post_vocab, deprel_vocab, postag_vocab, synpost_vocab, args)
     testset = DataIterator(instances, args)
-    precison , recall, f1 = eval(model, testset, args, False)
+    precision , recall, f1 = eval(model, testset, args, False)
     wandb.log({"test_precision": precision})
     wandb.log({"test_recall": recall})
     wandb.log({"test_f1": f1})
