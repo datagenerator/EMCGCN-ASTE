@@ -14,7 +14,6 @@ import utils
 
 import numpy as np
 import wandb
-from util import wandb_utils
 
 from prepare_vocab import VocabHelp
 from transformers import AdamW
@@ -240,7 +239,7 @@ if __name__ == '__main__':
     parser.add_argument('--learning_rate', default=1e-3, type=float)
     parser.add_argument('--bert_lr', default=2e-5, type=float)
     parser.add_argument("--adam_epsilon", default=1e-8, type=float, help="Epsilon for Adam optimizer.")
-    parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight deay if we apply some.")
+    parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight decay if we apply some.")
     parser.add_argument("--wandb_api_key", type = str, help = "Wandb Api key used for login.")
     parser.add_argument('--emb_dropout', type=float, default=0.5)
     parser.add_argument('--num_layers', type=int, default=1)
@@ -249,10 +248,12 @@ if __name__ == '__main__':
     parser.add_argument('--relation_constraint', default=True, action='store_true')
     parser.add_argument('--symmetry_decoding', default=False, action='store_true')
     parser.add_argument("--config", type = str, help = "config file path")
+    parser.add_argument("--wandb_project", type = str, help = "wandb project name")
+    parser.add_argument("--wandb_run", type = str, help = "wandb run name")
     os.environ["WANDB_API_KEY"] = parser.wandb_api_key
     with open(parser.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
-    wandb.init(project = wandb_project, name = wandb_run, config = config)
+    wandb.init(project = parser.wandb_project, name = parser.wandb_run, config = config)
     parser.bert_lr = config[bert_lr]
     parser.learning_rate = config[learning_rate]
     parser.adam_epsilon = config[adam_epsilon]
