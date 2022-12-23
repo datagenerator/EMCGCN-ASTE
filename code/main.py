@@ -250,21 +250,21 @@ if __name__ == '__main__':
     parser.add_argument("--config", type = str, help = "config file path")
     parser.add_argument("--wandb_project", type = str, help = "wandb project name")
     parser.add_argument("--wandb_run", type = str, help = "wandb run name")
-    os.environ["WANDB_API_KEY"] = parser.wandb_api_key
-    with open(parser.config, 'r') as stream:
-        config = yaml.load(stream, Loader=yaml.FullLoader)
-    wandb.init(project = parser.wandb_project, name = parser.wandb_run, config = config)
-    parser.bert_lr = config[bert_lr]
-    parser.learning_rate = config[learning_rate]
-    parser.adam_epsilon = config[adam_epsilon]
-    parser.weight_decay = config[weight_decay]
-    parser.batch_size = config[batch_size]
-    parser.max_sequence_len = config[max_sequence_len]
-    parser.emb_dropout = config[emb_dropout]
-    parser.num_layers = config[num_layers]
-    parser.gcn_dim = config[gcn_dim]
-    parse.bert_feature_dim = config[bert_feature_dim]
     args = parser.parse_args()
+    os.environ["WANDB_API_KEY"] = args.wandb_api_key
+    with open(args.config, 'r') as stream:
+        config = yaml.load(stream, Loader=yaml.FullLoader)
+    wandb.init(project = args.wandb_project, name = args.wandb_run, config = config)
+    args.bert_lr = config[bert_lr]
+    args.learning_rate = config[learning_rate]
+    args.adam_epsilon = config[adam_epsilon]
+    args.weight_decay = config[weight_decay]
+    args.batch_size = config[batch_size]
+    args.max_sequence_len = config[max_sequence_len]
+    args.emb_dropout = config[emb_dropout]
+    args.num_layers = config[num_layers]
+    args.gcn_dim = config[gcn_dim]
+    args.bert_feature_dim = config[bert_feature_dim]
 
     if args.seed is not None:
         random.seed(args.seed)
